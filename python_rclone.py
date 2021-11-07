@@ -1,7 +1,31 @@
 import subprocess
 from os import listdir
+from datetime import date
+import time
+
+
+
+def backup(backupMountPoint, rcloneBackupID, description):    
+    print("Beginning backup(s) of " + description)
+    
+    if rcloneBackupID == "encrypt_b2_data:":
+        returnCode = subprocess.run(["rclone","--dry-run", "--exclude-from","/root/exclude_from_backup.txt","--fast-list","sync",backupMountPoint,rcloneBackupID],capture_output=True,text=True)
+    else:
+        returnCode = subprocess.run(["rclone","--dry-run","--fast-list","sync",backupMountPoint,rcloneBackupID],capture_output=True,text=True)
+   
+    print("Return code of backups for: " + description + ": ", returnCode.returncode)
+    
+    printOutPut = returnCode.stderr
+    printList = printOutPut.split("\n")
+    #printList = print(returnCode.stderr.split("\n"))
+    for line in printList:
+        if not line.startswith("20"): #only get the summary from backblaze
+            print(line)
+
 
 #Make the summit volume is mounted
+
+# dd/mm/YYYY
 
 listOfFiles = listdir('/mnt/summit')
 
@@ -12,15 +36,18 @@ else:
     print("Remote directory is mounted. Proceeding")
 
 
-print("Beginning backups of virtual machines")
-returnCode = subprocess.run(["rclone","--dry-run","--fast-list","sync","/mnt/proxmox_backup/","encrypt_b2_virtual_machines:"],capture_output=True,text=True)
-print("Return code of VM backups() : ", returnCode.returncode)
+#Backup virtual machines
+backup("/mnt/proxmox_backup/","encrypt_b2_virtual_machines:","Virtual Machines")
 
-printOutPut = returnCode.stderr 
+#Backup home directory
+backup("/mnt/summit/Home","encrypt_b2_home:","Home Directory")
 
-print(printOutPut)
+#General data
+backup("/mnt/summit/Home","encrypt_b2_home:","General Data")
 
-#printList = printOutPut.split("\n")
+
+print("All backups complete")
+
 
 
 
