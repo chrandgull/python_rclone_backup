@@ -9,9 +9,9 @@ def backup(backupMountPoint, rcloneBackupID, description):
     print("Beginning backup(s) of " + description)
     
     if rcloneBackupID == "encrypt_b2_data:":
-        returnCode = subprocess.run(["rclone","--dry-run", "--exclude-from","/root/exclude_from_backup.txt","--fast-list","sync",backupMountPoint,rcloneBackupID],capture_output=True,text=True)
+        returnCode = subprocess.run(["rclone", "--exclude-from","/root/exclude_from_backup.txt","--fast-list","sync",backupMountPoint,rcloneBackupID],capture_output=True,text=True)
     else:
-        returnCode = subprocess.run(["rclone","--dry-run","--fast-list","sync",backupMountPoint,rcloneBackupID],capture_output=True,text=True)
+        returnCode = subprocess.run(["rclone","--fast-list","sync",backupMountPoint,rcloneBackupID],capture_output=True,text=True)
    
     print("Return code of backups for: " + description + ": ", returnCode.returncode)
     
