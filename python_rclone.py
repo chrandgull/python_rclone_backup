@@ -46,7 +46,7 @@ backup("/mnt/proxmox_backup/","encrypt_b2_virtual_machines:","Virtual Machines")
 backup("/mnt/summit/Home","encrypt_b2_home:","Home Directory")
 
 #General data
-backup("/mnt/summit/Home","encrypt_b2_home:","General Data")
+backup("/mnt/summit/Home","encrypt_b2_data:","General Data")
 
 
 print("All backups complete")
